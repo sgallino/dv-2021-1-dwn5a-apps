@@ -40,7 +40,10 @@ use Illuminate\Support\Facades\Route;
 //Route::get('/', function () {
 //    return view('welcome');
 //});
-Route::get('/', [HomeController::class, 'index']);
+// Usando el método "name" podemos ponerle un nombre a cada ruta para poder luego llamarla de esa forma.
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/peliculas', [PeliculasController::class, 'index']);
-Route::get('/peliculas/nueva', [PeliculasController::class, 'nuevaForm']);
+Route::get('/peliculas', [PeliculasController::class, 'index'])->name('peliculas.index');
+Route::get('/peliculas/nueva', [PeliculasController::class, 'nuevaForm'])->name('peliculas.nueva-form');
+Route::post('/peliculas/nueva', [PeliculasController::class, 'crear'])->name('peliculas.crear');
+Route::get('/peliculas/{pelicula}', [PeliculasController::class, 'ver'])->name('peliculas.ver');

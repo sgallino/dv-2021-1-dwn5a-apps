@@ -17,16 +17,16 @@
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= url('/');?>">Home</a>
+                    <a class="nav-link <?= url()->current() == url('/') ? 'active' : '';?>" href="<?= url('/');?>">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= url('/peliculas');?>">Películas</a>
+                    <a class="nav-link <?= url()->current() == url('/peliculas') ? 'active' : '';?>" href="<?= url('/peliculas');?>">Películas</a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container mb-4">
         {{-- La directiva yield permite "ceder" ese espacio a los que implementen este template.
          Debemos ponerle un nombre entre paréntesis. --}}
         @yield('main')

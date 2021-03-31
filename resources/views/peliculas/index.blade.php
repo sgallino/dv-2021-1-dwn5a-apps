@@ -1,3 +1,6 @@
+<?php
+/** @var \App\Models\Pelicula[]|\Illuminate\Database\Eloquent\Collection $peliculas */
+?>
 {{-- Extendemos el template de views/layouts/main.blade.php --}}
 @extends('layouts.main')
 
@@ -11,5 +14,26 @@
 
     <a href="<?= url('/peliculas/nueva');?>">Crear nueva película</a>
 
-    <p><i>Acá hay una tabla con películas (usen su imaginación).</i></p>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Fecha de estreno</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach($peliculas as $pelicula)
+        <tr>
+            <td>{{ $pelicula->pelicula_id }}</td>
+            <td>{{ $pelicula->titulo }}</td>
+            <td>{{ $pelicula->fecha_estreno }}</td>
+            <td>$ {{ $pelicula->precio / 100 }}</td>
+            <td><a href="{{ route('peliculas.ver', ['pelicula' => $pelicula->pelicula_id]) }}">Ver detalles</a></td>
+        </tr>
+        @endforeach
+        </tbody>
+    </table>
 @endsection
