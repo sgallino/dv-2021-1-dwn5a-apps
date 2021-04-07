@@ -27,6 +27,10 @@
     </nav>
 
     <div class="container mb-4">
+    @if(Session::has('message'))
+        <div class="alert alert-{{ Session::get('message_type') ?? 'success' }}">{{ Session::get('message') }}</div>
+    @endif
+
         {{-- La directiva yield permite "ceder" ese espacio a los que implementen este template.
          Debemos ponerle un nombre entre paréntesis. --}}
         @yield('main')

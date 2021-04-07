@@ -31,7 +31,7 @@
             <td>{{ $pelicula->titulo }}</td>
             <td>{{ $pelicula->fecha_estreno }}</td>
             <td>$ {{ $pelicula->precio / 100 }}</td>
-            <td><a href="{{ route('peliculas.ver', ['pelicula' => $pelicula->pelicula_id]) }}">Ver detalles</a></td>
+            <td><a href="{{ route('peliculas.ver', ['pelicula' => $pelicula->pelicula_id]) }}">Ver detalles</a> <a href="{{ route('peliculas.editarForm', ['pelicula' => $pelicula->pelicula_id]) }}">Editar</a></td>
         </tr>
         @endforeach
         </tbody>

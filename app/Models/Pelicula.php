@@ -49,4 +49,22 @@ class Pelicula extends Model
         'fecha_estreno',
         'duracion',
     ];
+
+    /** @var string[] Las reglas de validación. */
+    public static $rules = [
+        'titulo' => 'required|min:2',
+//        'titulo' => ['required', 'min:2'],
+        'precio' => 'required|numeric',
+        'fecha_estreno' => 'required|date'
+    ];
+
+    /** @var string[] Los mensajes personalizados de error para las $rules. */
+    public static $errorMessages = [
+        'titulo.required' => 'Tenés que escribir el título de la película.',
+        'titulo.min' => 'El título tiene que tener al menos 2 caracteres.',
+        'precio.required' => 'Tenés que escribir el precio de la película.',
+        'precio.numeric' => 'El precio de la película tiene que ser un número, sin decimales. Ej: 1234',
+        'fecha_estreno.required' => 'Tenés que escribir la fecha de estreno de la película.',
+        'fecha_estreno.date' => 'La fecha de estreno tiene que tener el siguiente formato: AAAA-MM-DD. Ej: 1999-02-23',
+    ];
 }

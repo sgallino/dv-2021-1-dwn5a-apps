@@ -40,7 +40,6 @@ class PeliculasController extends Controller
     {
         // all() retorna todos los datos recibidos del form por request.
 //        dd($request->all());
-        // TODO: Validar...
         // El método validate de Request recibe las reglas de validación.
         // Si pasa, el método del controller sigue como si nada.
         // Si falla, automágicamente Laravel corta este método del controller, guarda los datos del
@@ -48,16 +47,49 @@ class PeliculasController extends Controller
         // Nota: Esa página va a tener muy mano y convenientemente esa data para usar.
         // Nota 2: Si la petición fuera una llamada de Ajax, Laravel asume que quiere un JSON como
         // respuesta, así que genera un JSON con los errores, en vez de lo anterior.
-        $request->validate([
-            'titulo' => 'required|min:2',
-            'precio' => 'required|numeric',
-            'fecha_estreno' => 'required|date'
-        ]);
+
+        // Como segundo parámetro, pueden opcionalmente pasarle los mensajes de error personalizados
+        // para cada validación.
+        // También es un array. Para indicar a qué error corresponde cada mensaje, podemos usar la
+        // notación de ".". Por ejemplo:
+        // 'titulo.required' => 'El titulo es obligatorio'
+        $request->validate(Pelicula::$rules, Pelicula::$errorMessages);
 
         Pelicula::create($request->only(['titulo', 'sinopsis', 'duracion', 'fecha_estreno', 'precio']));
 //        Pelicula::create($request->all());
 
         // Redireccionamos al usuario a la ruta 'peliculas.index'.
-        return redirect()->route('peliculas.index');
+        return redirect()
+            ->route('peliculas.index')
+            // with() nos permite sumarle una "variable flash" de sesión a la respuesta.
+            ->with('message', 'La película se creó exitosamente.')
+            ->with('message_type', 'success');
+    }
+
+    public function editarForm(Pelicula $pelicula)
+    {
+        return view('peliculas.editar', compact('pelicula'));
+    }
+
+    public function editar(Request $request, Pelicula $pelicula)
+    {
+        $request->validate(Pelicula::$rules, Pelicula::$errorMessages);
+
+        $pelicula->update($request->only(['titulo', 'fecha_estreno', 'sinopsis', 'precio', 'duracion']));
+
+        return redirect()
+            ->route('peliculas.index')
+            ->with('message', 'La película fue editada con éxito.');
+    }
+
+    public function eliminar(Pelicula $pelicula)
+    {
+        // El método delete() elimina el registro del modelo que lo invoca.
+        $pelicula->delete();
+
+        return redirect()->route('peliculas.index')
+            // with() nos permite sumarle una "variable flash" de sesión a la respuesta.
+            ->with('message', 'La película se eliminó exitosamente.')
+            ->with('message_type', 'success');
     }
 }

@@ -17,4 +17,10 @@
         <dt>Sinopsis</dt>
         <dd>{{ $pelicula->sinopsis }}</dd>
     </dl>
+
+    <form action="{{ route('peliculas.eliminar', ['pelicula' => $pelicula->pelicula_id]) }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button class="btn btn-danger">Eliminar</button>
+    </form>
 @endsection

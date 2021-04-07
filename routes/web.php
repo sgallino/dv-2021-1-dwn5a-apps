@@ -47,3 +47,7 @@ Route::get('/peliculas', [PeliculasController::class, 'index'])->name('peliculas
 Route::get('/peliculas/nueva', [PeliculasController::class, 'nuevaForm'])->name('peliculas.nueva-form');
 Route::post('/peliculas/nueva', [PeliculasController::class, 'crear'])->name('peliculas.crear');
 Route::get('/peliculas/{pelicula}', [PeliculasController::class, 'ver'])->name('peliculas.ver');
+Route::get('/peliculas/{pelicula}/editar', [PeliculasController::class, 'editarForm'])->name('peliculas.editarForm');
+Route::put('/peliculas/{pelicula}/editar', [PeliculasController::class, 'editar'])->name('peliculas.editar');
+
+Route::delete('/peliculas/{pelicula}/eliminar', [PeliculasController::class, 'eliminar'])->name('peliculas.eliminar');
