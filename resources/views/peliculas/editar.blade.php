@@ -1,5 +1,7 @@
 <?php
 /** @var \Illuminate\Support\ViewErrorBag|\Illuminate\Support\MessageBag $errors */
+/** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Pais[] $paises */
+/** @var \Illuminate\Database\Eloquent\Collection|\App\Models\Genero[] $generos */
 /** @var \App\Models\Pelicula $pelicula */
 ?>
 {{-- Extendemos el template de views/layouts/main.blade.php --}}
@@ -47,9 +49,23 @@
             <input type="text" id="duracion" name="duracion" class="form-control" value="{{ old('duracion', $pelicula->duracion) }}">
         </div>
         <div class="form-group">
+            <label for="pais_id">País</label>
+            <select id="pais_id" name="pais_id" class="form-control">
+                @foreach($paises as $pais)
+                    <option value="{{ $pais->pais_id }}" @if(old('pais_id', $pelicula->pais->pais_id) == $pais->pais_id) selected @endif>{{ $pais->nombre }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="form-group">
             <label for="sinopsis">Sinopsis</label>
             <textarea id="sinopsis" name="sinopsis" class="form-control">{{ old('sinopsis', $pelicula->sinopsis) }}</textarea>
         </div>
+        <fieldset>
+            <legend>Géneros</legend>
+            @foreach($generos as $genero)
+                <label><input type="checkbox" name="genero_id[]" value="{{ $genero->genero_id }}" @if( in_array($genero->genero_id, old('genero_id', $pelicula->generos->pluck('genero_id')->toArray())) ) checked @endif> {{ $genero->nombre }}</label>
+            @endforeach
+        </fieldset>
         <button class="btn btn-block btn-primary">Editar :D</button>
     </form>
 @endsection

@@ -26,6 +26,7 @@ class PeliculasSeeder extends Seeder
             'duracion' => 90,
             'precio' => 3099,
             'fecha_estreno' => '1940-06-15',
+            'pais_id' => 2,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -39,6 +40,7 @@ class PeliculasSeeder extends Seeder
                 'duracion' => 110,
                 'precio' => 2499,
                 'fecha_estreno' => '2015-05-07',
+                'pais_id' => 3,
                 'created_at' => date('Y-m-d'),
                 'updated_at' => date('Y-m-d'),
             ],
@@ -49,8 +51,32 @@ class PeliculasSeeder extends Seeder
                 'duracion' => 132,
                 'precio' => 2899,
                 'fecha_estreno' => '1999-04-22',
+                'pais_id' => 2,
                 'created_at' => date('Y-m-d'),
                 'updated_at' => date('Y-m-d'),
+            ],
+        ]);
+
+        DB::table('peliculas_tienen_generos')->insert([
+            [
+                'pelicula_id' => 1,
+                'genero_id' => 1,
+            ],
+            [
+                'pelicula_id' => 1,
+                'genero_id' => 4,
+            ],
+            [
+                'pelicula_id' => 2,
+                'genero_id' => 1,
+            ],
+            [
+                'pelicula_id' => 2,
+                'genero_id' => 5,
+            ],
+            [
+                'pelicula_id' => 3,
+                'genero_id' => 3,
             ],
         ]);
     }

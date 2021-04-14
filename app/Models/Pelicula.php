@@ -16,6 +16,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $fecha_estreno
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $pais_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Genero[] $generos
+ * @property-read int|null $generos_count
+ * @property-read \App\Models\Pais $pais
  * @method static \Illuminate\Database\Eloquent\Builder|Pelicula newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Pelicula newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Pelicula query()
@@ -27,6 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Pelicula whereSinopsis($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Pelicula whereTitulo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Pelicula whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pelicula wherePaisId($value)
  * @mixin \Eloquent
  */
 class Pelicula extends Model
@@ -48,6 +53,7 @@ class Pelicula extends Model
         'precio',
         'fecha_estreno',
         'duracion',
+        'pais_id',
     ];
 
     /** @var string[] Las reglas de validación. */
@@ -67,4 +73,46 @@ class Pelicula extends Model
         'fecha_estreno.required' => 'Tenés que escribir la fecha de estreno de la película.',
         'fecha_estreno.date' => 'La fecha de estreno tiene que tener el siguiente formato: AAAA-MM-DD. Ej: 1999-02-23',
     ];
+
+    /*
+     |--------------------------------------------------------------------------
+     | Relaciones
+     |--------------------------------------------------------------------------
+     */
+    // Cada relación se define con un método.
+    // El nombre del método va a ser la forma de acceder a los modelos asociados.
+    // Esos métodos deben retornar la relación.
+    public function pais()
+    {
+        // belongsTo() permite definir una relación de uno-a-muchos en la tabla referenciante (es
+        // decir, la del muchos, la que lleva la FK).
+        // Todos los métodos de relación reciben como primer argumento el nombre del modelo al que
+        // se asocian.
+        // Si no usan las convenciones de Laravel (como yo), entonces tienen que agregar algunos
+        // parámetros más.
+        // Segundo parámetro: "Foreign Key".
+        // Tercer parámetro: "Owner Key".
+        // Donde "Foreign Key" hace referencia al campo de la FK, y "Owner Key" al campo de la PK que
+        // se referencia.
+        return $this->belongsTo(Pais::class, 'pais_id', 'pais_id');
+    }
+
+    public function generos()
+    {
+        // belongsToMany() es el método para definir una relación n:n.
+        // Este recibe unos cuántos parámetros más (aparte del modelo) si no siguen las convenciones
+        // de Laravel.
+        // Segundo parámetro: "table" - La tabla pivot.
+        // Tercer parámetro: "foreignPivotKey"
+        //      El nombre de la FK para la tabla de _este_ modelo en la tabla pivot.
+        //      En este caso, sería "pelicula_id" de "peliculas_tienen_generos".
+        // Cuarto parámetro: "relatedPivotKey"
+        //      El nombre de la FK para la tabla del _otro_ modelo en la tabla pivot.
+        //      En este caso, sería "genero_id" de "peliculas_tienen_generos".
+        // Quinto parámetro: "parentKey"
+        //      El nombre de la PK de _este_ modelo al que la foreignPivotKey apunta.
+        // Sexto parámetro: "relatedKey".
+        //      La PK del _otro_ modelo al que relatedPivotKey apunta.
+        return $this->belongsToMany(Genero::class, 'peliculas_tienen_generos', 'pelicula_id', 'genero_id', 'pelicula_id', 'genero_id');
+    }
 }
