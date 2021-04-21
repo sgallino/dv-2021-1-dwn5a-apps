@@ -22,6 +22,19 @@
                 <li class="nav-item">
                     <a class="nav-link <?= url()->current() == url('/peliculas') ? 'active' : '';?>" href="<?= url('/peliculas');?>">Películas</a>
                 </li>
+{{--            @if(auth()->guest())--}}
+            @guest()
+                <li class="nav-item">
+                    <a class="nav-link <?= url()->current() == url('/login') ? 'active' : '';?>" href="<?= url('/login');?>">Iniciar Sesión</a>
+                </li>
+            @endguest
+{{--            @else--}}
+            @auth()
+                <li class="nav-item">
+                    <a class="nav-link <?= url()->current() == url('/logout') ? 'active' : '';?>" href="<?= url('/logout');?>">Cerrar Sesión</a>
+                </li>
+{{--            @endif--}}
+            @endauth
             </ul>
         </div>
     </nav>

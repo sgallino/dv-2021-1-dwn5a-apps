@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PeliculasController;
 use Illuminate\Support\Facades\Route;
@@ -41,13 +42,48 @@ use Illuminate\Support\Facades\Route;
 //    return view('welcome');
 //});
 // Usando el método "name" podemos ponerle un nombre a cada ruta para poder luego llamarla de esa forma.
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])
+    ->name('home');
 
-Route::get('/peliculas', [PeliculasController::class, 'index'])->name('peliculas.index');
-Route::get('/peliculas/nueva', [PeliculasController::class, 'nuevaForm'])->name('peliculas.nueva-form');
-Route::post('/peliculas/nueva', [PeliculasController::class, 'crear'])->name('peliculas.crear');
-Route::get('/peliculas/{pelicula}', [PeliculasController::class, 'ver'])->name('peliculas.ver');
-Route::get('/peliculas/{pelicula}/editar', [PeliculasController::class, 'editarForm'])->name('peliculas.editarForm');
-Route::put('/peliculas/{pelicula}/editar', [PeliculasController::class, 'editar'])->name('peliculas.editar');
 
-Route::delete('/peliculas/{pelicula}/eliminar', [PeliculasController::class, 'eliminar'])->name('peliculas.eliminar');
+// El nombre de la ruta del form de login es importante para que el middleware de autenticación de
+// Laravle nos redireccione.
+// Por defecto, busca el nombre "login".
+// Si lo quieren cambiar, pueden ir a:
+// app/Http/Middleware/Authenticate
+// Y modificar la ruta en el método.
+Route::get('/login', [AuthController::class, 'loginForm'])
+    ->name('auth.login-form');
+Route::post('/login', [AuthController::class, 'login'])
+    ->name('auth.login');
+Route::get('/logout', [AuthController::class, 'logout'])
+    ->name('auth.logout');
+
+
+// Desde las mismas rutas, a través de un "middleware", podemos indicar cuales requieren autenticación
+// para poder ingresar. El middleware en cuestión es "auth".
+Route::get('/peliculas', [PeliculasController::class, 'index'])
+    ->name('peliculas.index');
+
+Route::get('/peliculas/nueva', [PeliculasController::class, 'nuevaForm'])
+    ->name('peliculas.nueva-form')
+    ->middleware(['auth']);
+
+Route::post('/peliculas/nueva', [PeliculasController::class, 'crear'])
+    ->name('peliculas.crear')
+    ->middleware(['auth']);
+
+Route::get('/peliculas/{pelicula}', [PeliculasController::class, 'ver'])
+    ->name('peliculas.ver');
+
+Route::get('/peliculas/{pelicula}/editar', [PeliculasController::class, 'editarForm'])
+    ->name('peliculas.editarForm')
+    ->middleware(['auth']);
+
+Route::put('/peliculas/{pelicula}/editar', [PeliculasController::class, 'editar'])
+    ->name('peliculas.editar')
+    ->middleware(['auth']);
+
+Route::delete('/peliculas/{pelicula}/eliminar', [PeliculasController::class, 'eliminar'])
+    ->name('peliculas.eliminar')
+    ->middleware(['auth']);

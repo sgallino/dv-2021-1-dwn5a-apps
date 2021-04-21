@@ -29,4 +29,9 @@ class Pais extends Model
 
     protected $table = 'paises';
     protected $primaryKey = 'pais_id';
+
+    public function peliculas()
+    {
+        return $this->hasMany(Pelicula::class, 'pais_id', 'pais_id');
+    }
 }

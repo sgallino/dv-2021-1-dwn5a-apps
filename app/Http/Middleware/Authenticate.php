@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Support\Facades\Session;
 
 class Authenticate extends Middleware
 {
@@ -15,7 +16,10 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
-            return route('login');
+            // Agregamos una variable de sesión con un mensaje.
+            Session::flash('message', 'Se requiere iniciar sesión para ver este contenido. :)');
+            Session::flash('message_type', 'info');
+            return route('auth.login-form');
         }
     }
 }

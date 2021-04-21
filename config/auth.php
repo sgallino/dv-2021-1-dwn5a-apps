@@ -14,7 +14,10 @@ return [
     */
 
     'defaults' => [
+        // Por defecto, laravel utiliza el guard "web" que implica autenticación con sesiones.
+        // Este guard está configurado abajo.
         'guard' => 'web',
+        // 'passwords' indica la configuración de la tabla para el recuperar contraseña.
         'passwords' => 'users',
     ],
 
@@ -37,7 +40,9 @@ return [
 
     'guards' => [
         'web' => [
+            // 'driver' Indica cómo se almacena la autenticación del usuario.
             'driver' => 'session',
+            // 'provider' Indica cómo obtener a los usuarios. De donde "provienen".
             'provider' => 'users',
         ],
 
@@ -68,7 +73,10 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            // Indicamos el modelo de Eloquent que va a utilizarse para autenticar.
+            // Debe implementar una serie de métodos y funcionalidades extras, que están ya provistas
+            // por una clase extra que trae Laravel.
+            'model' => App\Models\Usuario::class,
         ],
 
         // 'users' => [

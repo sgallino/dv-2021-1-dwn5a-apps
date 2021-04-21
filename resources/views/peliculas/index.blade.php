@@ -32,6 +32,7 @@
             <td>{{ $pelicula->pelicula_id }}</td>
             <td>{{ $pelicula->titulo }}</td>
             <td>{{ $pelicula->fecha_estreno }}</td>
+{{--            <td>{{ $pelicula->pais !== null ? $pelicula->pais->nombre : 'No disponible' }}</td>--}}
             <td>{{ $pelicula->pais->nombre }}</td>
             <td>
             @if($pelicula->generos->count() > 0)
