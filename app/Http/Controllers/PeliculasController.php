@@ -9,20 +9,39 @@ use Illuminate\Http\Request;
 
 class PeliculasController extends Controller
 {
-    public function index()
+    // Para poder buscar, necesitamos traer la instacia de Request que tiene acceso a los
+    // datos de la URL.
+    public function index(Request $request)
     {
         // Vamos a obtener todas las películas de la base a través de Eloquent.
 //        $peliculas = Pelicula::all();
         // Cambiamos ahora a pedir que traiga todos los registros, pero asociados a sus
         // correspondientes relaciones.
         // Noten que no usamos "all()" acá, sino que usamos "get()".
-        $peliculas = Pelicula::with(['pais', 'generos'])->get();
+//        $peliculas = Pelicula::with(['pais', 'generos'])->get();
+
+        $formParams = [];
+
+        // Para buscar, como puede haber una búsqueda o no, vamos a separar en pasos la ejecución
+        // de la llamada de Eloquent.
+        $peliculasQuery = Pelicula::with(['pais', 'generos', 'calificacion']);
+
+        // Preguntamos si hay algún parámetro de búsqueda.
+        // Para pedir datos que llegan por GET en el query string, tenemos el método "query".
+        if($request->query('titulo')) {
+            $peliculasQuery->where('titulo', 'like', '%' . $request->query('titulo') . '%');
+            $formParams['titulo'] = $request->query('titulo');
+        }
+
+        // paginate() nos permite pedir los resultados paginados.
+        // Como primer parámetro, le podemos pasar cuántos registros queremos por página.
+        $peliculas = $peliculasQuery->paginate(2)->withQueryString();
 
 //        return view('peliculas.index', [
 //            'peliculas' => $peliculas
 //        ]);
 
-        return view('peliculas.index', compact('peliculas'));
+        return view('peliculas.index', compact('peliculas', 'formParams'));
     }
 
     // Cualquier parámetro que esté indicado en la ruta Laravel lo provee como argumento del método.

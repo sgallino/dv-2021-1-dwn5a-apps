@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PeliculasController;
+use App\Http\Controllers\VerificarEdadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,28 +63,62 @@ Route::get('/logout', [AuthController::class, 'logout'])
 
 // Desde las mismas rutas, a través de un "middleware", podemos indicar cuales requieren autenticación
 // para poder ingresar. El middleware en cuestión es "auth".
-Route::get('/peliculas', [PeliculasController::class, 'index'])
-    ->name('peliculas.index');
+//Route::get('/peliculas', [PeliculasController::class, 'index'])
+//    ->name('peliculas.index');
+//
+//Route::get('/peliculas/nueva', [PeliculasController::class, 'nuevaForm'])
+//    ->name('peliculas.nueva-form')
+//    ->middleware(['auth']);
+//
+//Route::post('/peliculas/nueva', [PeliculasController::class, 'crear'])
+//    ->name('peliculas.crear')
+//    ->middleware(['auth']);
+//
+//Route::get('/peliculas/{pelicula}', [PeliculasController::class, 'ver'])
+//    ->name('peliculas.ver');
+//
+//Route::get('/peliculas/{pelicula}/editar', [PeliculasController::class, 'editarForm'])
+//    ->name('peliculas.editarForm')
+//    ->middleware(['auth']);
+//
+//Route::put('/peliculas/{pelicula}/editar', [PeliculasController::class, 'editar'])
+//    ->name('peliculas.editar')
+//    ->middleware(['auth']);
+//
+//Route::delete('/peliculas/{pelicula}/eliminar', [PeliculasController::class, 'eliminar'])
+//    ->name('peliculas.eliminar')
+//    ->middleware(['auth']);
 
-Route::get('/peliculas/nueva', [PeliculasController::class, 'nuevaForm'])
-    ->name('peliculas.nueva-form')
-    ->middleware(['auth']);
+Route::get('verificar-edad', [VerificarEdadController::class, 'verificarForm'])
+    ->name('peliculas.verificar-edad-form');
+Route::post('verificar-edad', [VerificarEdadController::class, 'verificar'])
+    ->name('peliculas.verificar-edad');
 
-Route::post('/peliculas/nueva', [PeliculasController::class, 'crear'])
-    ->name('peliculas.crear')
-    ->middleware(['auth']);
+// Definimos las mismas rutas de películas, pero englobándolas en un grupo.
+Route::prefix('/peliculas')->group(function() {
+    Route::get('/', [PeliculasController::class, 'index'])
+        ->name('peliculas.index');
 
-Route::get('/peliculas/{pelicula}', [PeliculasController::class, 'ver'])
-    ->name('peliculas.ver');
+    Route::get('/{pelicula}', [PeliculasController::class, 'ver'])
+        ->name('peliculas.ver')
+        ->middleware(['mayor.18']) // Agregamos el middleware que agregamos en Kernel.
+//        ->where('pelicula', '[0-9]+'); // Pide que "pelicula" sea un número.
+        ->whereNumber('pelicula'); // Pide que "pelicula" sea un número.
 
-Route::get('/peliculas/{pelicula}/editar', [PeliculasController::class, 'editarForm'])
-    ->name('peliculas.editarForm')
-    ->middleware(['auth']);
+    Route::middleware(['auth'])->group(function() {
+        Route::get('/nueva', [PeliculasController::class, 'nuevaForm'])
+            ->name('peliculas.nueva-form');
 
-Route::put('/peliculas/{pelicula}/editar', [PeliculasController::class, 'editar'])
-    ->name('peliculas.editar')
-    ->middleware(['auth']);
+        Route::post('/nueva', [PeliculasController::class, 'crear'])
+            ->name('peliculas.crear');
 
-Route::delete('/peliculas/{pelicula}/eliminar', [PeliculasController::class, 'eliminar'])
-    ->name('peliculas.eliminar')
-    ->middleware(['auth']);
+        Route::get('/{pelicula}/editar', [PeliculasController::class, 'editarForm'])
+            ->name('peliculas.editarForm');
+
+        Route::put('/{pelicula}/editar', [PeliculasController::class, 'editar'])
+            ->name('peliculas.editar');
+
+        Route::delete('/{pelicula}/eliminar', [PeliculasController::class, 'eliminar'])
+            ->name('peliculas.eliminar');
+    });
+});

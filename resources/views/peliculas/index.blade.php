@@ -1,5 +1,6 @@
 <?php
 /** @var \App\Models\Pelicula[]|\Illuminate\Database\Eloquent\Collection $peliculas */
+/** @var array $formParams */
 ?>
 {{-- Extendemos el template de views/layouts/main.blade.php --}}
 @extends('layouts.main')
@@ -14,6 +15,17 @@
 
     <a href="<?= url('/peliculas/nueva');?>">Crear nueva película</a>
 
+    <div class="mb-3">
+        <h2>Buscador</h2>
+        <form action="{{ route('peliculas.index') }}" method="get">
+            <div class="form-group">
+                <label for="b-titulo">Título</label>
+                <input type="text" id="b-titulo" name="titulo" class="form-control" value="{{ $formParams['titulo'] ?? null }}">
+            </div>
+            <button class="btn btn-primary" type="submit">Buscar</button>
+        </form>
+    </div>
+
     <table class="table table-bordered table-striped">
         <thead>
         <tr>
@@ -22,6 +34,7 @@
             <th>Fecha de estreno</th>
             <th>País</th>
             <th>Géneros</th>
+            <th>Calificación</th>
             <th>Precio</th>
             <th>Acciones</th>
         </tr>
@@ -54,10 +67,14 @@
                 No disponibles
             @endif
             </td>
+            <td>{{ $pelicula->calificacion->nombre }}</td>
             <td>$ {{ $pelicula->precio / 100 }}</td>
             <td><a href="{{ route('peliculas.ver', ['pelicula' => $pelicula->pelicula_id]) }}">Ver detalles</a> <a href="{{ route('peliculas.editarForm', ['pelicula' => $pelicula->pelicula_id]) }}">Editar</a></td>
         </tr>
         @endforeach
         </tbody>
     </table>
+
+    {{-- Agregamos las navegación de la paginación. --}}
+    {{ $peliculas->links() }}
 @endsection

@@ -115,4 +115,9 @@ class Pelicula extends Model
         //      La PK del _otro_ modelo al que relatedPivotKey apunta.
         return $this->belongsToMany(Genero::class, 'peliculas_tienen_generos', 'pelicula_id', 'genero_id', 'pelicula_id', 'genero_id');
     }
+
+    public function calificacion()
+    {
+        return $this->belongsTo(Calificacion::class, 'calificacion_id', 'calificacion_id');
+    }
 }
