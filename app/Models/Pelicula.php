@@ -53,6 +53,7 @@ class Pelicula extends Model
         'precio',
         'fecha_estreno',
         'duracion',
+        'imagen',
         'pais_id',
     ];
 

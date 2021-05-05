@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCalificacionIdToPeliculasTable extends Migration
+class AddImagenFieldToPeliculasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,7 @@ class AddCalificacionIdToPeliculasTable extends Migration
     public function up()
     {
         Schema::table('peliculas', function (Blueprint $table) {
-            $table->unsignedTinyInteger('calificacion_id')->default(1);
-            $table->foreign('calificacion_id')->references('calificacion_id')->on('calificaciones');
+            $table->string('imagen', 255)->nullable()->after('fecha_estreno');
         });
     }
 
@@ -27,8 +26,7 @@ class AddCalificacionIdToPeliculasTable extends Migration
     public function down()
     {
         Schema::table('peliculas', function (Blueprint $table) {
-            $table->dropForeign('calificacion_id');
-            $table->dropColumn('calificacion_id');
+            $table->dropColumn('imagen');
         });
     }
 }

@@ -14,7 +14,7 @@
 
     <p>Completá el form.</p>
 
-    <form action="{{ route('peliculas.crear') }}" method="post">
+    <form action="{{ route('peliculas.crear') }}" method="post" enctype="multipart/form-data">
         {{-- La directiva de Blade "csrf" agrega un campo hidden para enviar el token de protección
         contra CSRF. Sin esto, la petición va a siempre retornar 419. --}}
         @csrf
@@ -57,6 +57,10 @@
         <div class="form-group">
             <label for="sinopsis">Sinopsis</label>
             <textarea id="sinopsis" name="sinopsis" class="form-control">{{ old('sinopsis') }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="imagen">Imagen</label>
+            <input type="file" id="imagen" name="imagen" class="form-control">
         </div>
         <fieldset>
             <legend>Géneros</legend>

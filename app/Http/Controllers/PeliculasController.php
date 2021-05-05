@@ -6,6 +6,7 @@ use App\Models\Pais;
 use App\Models\Pelicula;
 use App\Models\Genero;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 
 class PeliculasController extends Controller
 {
@@ -83,8 +84,33 @@ class PeliculasController extends Controller
         // 'titulo.required' => 'El titulo es obligatorio'
         $request->validate(Pelicula::$rules, Pelicula::$errorMessages);
 
+        $data = $request->only(['titulo', 'sinopsis', 'duracion', 'fecha_estreno', 'precio', 'pais_id']);
+
+        // Upload de imagen.
+        if($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+
+            // Subimos el archivo usando el disco "public" del filesystem de Laravel.
+//            $path = $imagen->store('imgs', 'public');
+//            $data['imagen'] = $path;
+
+            // Versión con redimensionado vía intervention/image.
+            // Primero, creamos el nombre de la imagen, obteniendo la extensión del cliente.
+            $nombreImagen = md5(time()) . '.' . $imagen->clientExtension();
+            // Abrimos la imagen con make() para poder editarla en memoria.
+            // La redimensionamos con resize a 400x400, manteniendo la proporción.
+            // Y la guardamos en la ruta del storage.
+            Image::make($imagen)->resize(400, 400, function($constraint) {
+                // Esto le dice que redimensione manteniendo la proporción.
+                $constraint->upsize();
+                $constraint->aspectRatio();
+            })->save(storage_path('app/public/imgs/' . $nombreImagen));
+            $data['imagen'] = 'imgs/' . $nombreImagen;
+//            dd($imagen);
+        }
+
         // Creamos la película, y obtenemos la instancia creada.
-        $pelicula = Pelicula::create($request->only(['titulo', 'sinopsis', 'duracion', 'fecha_estreno', 'precio', 'pais_id']));
+        $pelicula = Pelicula::create($data);
 //        Pelicula::create($request->all());
 
         // Le agregamos los géneros, usando el práctico método "attach" de la relación (noten que
