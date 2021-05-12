@@ -118,6 +118,9 @@ Route::prefix('/peliculas')->group(function() {
         Route::put('/{pelicula}/editar', [PeliculasController::class, 'editar'])
             ->name('peliculas.editar');
 
+        Route::put('/{pelicula}/restaurar', [PeliculasController::class, 'restaurar'])
+            ->name('peliculas.restaurar');
+
         Route::delete('/{pelicula}/eliminar', [PeliculasController::class, 'eliminar'])
             ->name('peliculas.eliminar');
     });

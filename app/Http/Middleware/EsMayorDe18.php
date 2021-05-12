@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Pelicula;
+use App\Repositories\PeliculaRepository;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -43,7 +44,8 @@ class EsMayorDe18
         // Esto se debe a que Laravel analiza de antemano los requisitos del método del controller, y
         // reconoce que está bindeando este parámetro a un objeto Pelicula.
         /** @var Pelicula $pelicula */
-        $pelicula = $request->route()->parameter('pelicula');
+        $id = $request->route()->parameter('pelicula');
+        $pelicula = (new PeliculaRepository())->getByPk($id);
         // Podemos ver que esto nos retorna el objeto Pelicula.
 //        echo "<pre>";
 //        print_r($pelicula);

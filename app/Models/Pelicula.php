@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Pelicula
@@ -36,6 +37,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Pelicula extends Model
 {
+    use SoftDeletes;
+
     // Por defecto, Laravel busca una tabla que se llame igual que el modelo, pero como plural en inglés
     // y todo minúsculas.
     // Si eso no nos sirve, podemos en cada modelo especificar manualmente el nombre de la tabla.

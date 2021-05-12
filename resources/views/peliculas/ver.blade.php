@@ -30,9 +30,17 @@
         <dd>{{ $pelicula->sinopsis }}</dd>
     </dl>
 
+    @if($pelicula->trashed())
+    <form action="{{ route('peliculas.restaurar', ['pelicula' => $pelicula->pelicula_id]) }}" method="POST">
+        @csrf
+        @method('PUT')
+        <button class="btn btn-success">Rehabilitar película</button>
+    </form>
+    @else
     <form action="{{ route('peliculas.eliminar', ['pelicula' => $pelicula->pelicula_id]) }}" method="POST">
         @csrf
         @method('DELETE')
         <button class="btn btn-danger">Eliminar</button>
     </form>
+    @endif
 @endsection

@@ -5,52 +5,43 @@ namespace App\Http\Controllers;
 use App\Models\Pais;
 use App\Models\Pelicula;
 use App\Models\Genero;
+use App\Repositories\PeliculaRepository;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 
 class PeliculasController extends Controller
 {
+    /** @var PeliculaRepository Repositorio que administra las películas. */
+    protected $repository;
+
+    public function __construct()
+    {
+        $this->repository = new PeliculaRepository();
+    }
+
     // Para poder buscar, necesitamos traer la instacia de Request que tiene acceso a los
     // datos de la URL.
     public function index(Request $request)
     {
-        // Vamos a obtener todas las películas de la base a través de Eloquent.
-//        $peliculas = Pelicula::all();
-        // Cambiamos ahora a pedir que traiga todos los registros, pero asociados a sus
-        // correspondientes relaciones.
-        // Noten que no usamos "all()" acá, sino que usamos "get()".
-//        $peliculas = Pelicula::with(['pais', 'generos'])->get();
-
         $formParams = [];
-
-        // Para buscar, como puede haber una búsqueda o no, vamos a separar en pasos la ejecución
-        // de la llamada de Eloquent.
-        $peliculasQuery = Pelicula::with(['pais', 'generos', 'calificacion']);
 
         // Preguntamos si hay algún parámetro de búsqueda.
         // Para pedir datos que llegan por GET en el query string, tenemos el método "query".
         if($request->query('titulo')) {
-            $peliculasQuery->where('titulo', 'like', '%' . $request->query('titulo') . '%');
             $formParams['titulo'] = $request->query('titulo');
         }
 
-        // paginate() nos permite pedir los resultados paginados.
-        // Como primer parámetro, le podemos pasar cuántos registros queremos por página.
-        $peliculas = $peliculasQuery->paginate(2)->withQueryString();
-
-//        return view('peliculas.index', [
-//            'peliculas' => $peliculas
-//        ]);
+        $peliculas = $this->repository->all($formParams);
 
         return view('peliculas.index', compact('peliculas', 'formParams'));
     }
 
     // Cualquier parámetro que esté indicado en la ruta Laravel lo provee como argumento del método.
-    public function ver(Pelicula $pelicula)
+    public function ver($pelicula)
     {
         // find() busca un registro por su PK.
         // findOrFail() hace lo mismo, pero si el registro no existe, lanza un 404.
-//        $pelicula = Pelicula::findOrFail($id);
+        $pelicula = $this->repository->getByPk($pelicula);
 
         return view('peliculas.ver', compact('pelicula'));
     }
@@ -110,7 +101,7 @@ class PeliculasController extends Controller
         }
 
         // Creamos la película, y obtenemos la instancia creada.
-        $pelicula = Pelicula::create($data);
+        $pelicula = $this->repository->create($data);
 //        Pelicula::create($request->all());
 
         // Le agregamos los géneros, usando el práctico método "attach" de la relación (noten que
@@ -127,42 +118,60 @@ class PeliculasController extends Controller
             ->with('message_type', 'success');
     }
 
-    public function editarForm(Pelicula $pelicula)
+    public function editarForm($pelicula)
     {
+        $pelicula = $this->repository->getByPk($pelicula);
         $paises = Pais::all();
         $generos = Genero::all();
 
         return view('peliculas.editar', compact('pelicula', 'paises', 'generos'));
     }
 
-    public function editar(Request $request, Pelicula $pelicula)
+    public function editar(Request $request, $pelicula)
     {
         $request->validate(Pelicula::$rules, Pelicula::$errorMessages);
 
-        $pelicula->update($request->only(['titulo', 'fecha_estreno', 'sinopsis', 'precio', 'duracion', 'pais_id']));
+//        $pelicula->update($request->only(['titulo', 'fecha_estreno', 'sinopsis', 'precio', 'duracion', 'pais_id']));
 
         // Para actualizar los géneros, usamos el práctico método "sync" de la relación (noten que
         // accedemos a generos como método, no propiedad).
         // Este método, se encarga de sincronizar los registros de la tabla pivot para esta película
         // de manera que solo queden los que están en el array que le paso.
-        $pelicula->generos()->sync($request->input('genero_id'));
+//        $pelicula->generos()->sync($request->input('genero_id'));
+
+        $this->repository->update($pelicula, $request->only(['titulo', 'fecha_estreno', 'sinopsis', 'precio', 'duracion', 'pais_id', 'genero_id']));
 
         return redirect()
             ->route('peliculas.index')
             ->with('message', 'La película fue editada con éxito.');
     }
 
-    public function eliminar(Pelicula $pelicula)
+    public function eliminar($pelicula)
     {
         // Quitamos las relaciones de la tabla pivot.
-        $pelicula->generos()->detach();
+//        $pelicula->generos()->detach();
+        // Como estamos haciendo un Soft Delete ahora, no necesitamos eliminar los datos de la tabla
+        // pivot. :)
 
         // El método delete() elimina el registro del modelo que lo invoca.
-        $pelicula->delete();
+//        $pelicula->delete();
+        $this->repository->delete($pelicula);
 
         return redirect()->route('peliculas.index')
             // with() nos permite sumarle una "variable flash" de sesión a la respuesta.
             ->with('message', 'La película se eliminó exitosamente.')
+            ->with('message_type', 'success');
+    }
+
+    public function restaurar($pelicula)
+    {
+        $pelicula = Pelicula::withTrashed()->findOrFail($pelicula);
+
+        $pelicula->restore();
+
+        return redirect()->route('peliculas.index')
+            // with() nos permite sumarle una "variable flash" de sesión a la respuesta.
+            ->with('message', 'La película ' . $pelicula->titulo . ' se rehabilitó exitosamente.')
             ->with('message_type', 'success');
     }
 }

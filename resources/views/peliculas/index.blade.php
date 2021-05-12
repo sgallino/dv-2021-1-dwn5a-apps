@@ -41,7 +41,7 @@
         </thead>
         <tbody>
         @foreach($peliculas as $pelicula)
-        <tr>
+        <tr @if($pelicula->trashed()) class="bg-warning" @endif>
             <td>{{ $pelicula->pelicula_id }}</td>
             <td>{{ $pelicula->titulo }}</td>
             <td>{{ $pelicula->fecha_estreno }}</td>
