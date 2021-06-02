@@ -5,18 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Pais;
 use App\Models\Pelicula;
 use App\Models\Genero;
-use App\Repositories\PeliculaRepository;
+use App\Repositories\PeliculaRepositoryInterface;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 
 class PeliculasController extends Controller
 {
-    /** @var PeliculaRepository Repositorio que administra las películas. */
+    /** @var PeliculaRepositoryInterface Repositorio que administra las películas. */
     protected $repository;
 
-    public function __construct()
+    /**
+     * PeliculasController constructor.
+     * Le pedimos a Laravel que nos inyecte en el constructor la clase asociada a la interface
+     * PeliculaRepositoryInterface.
+     * Esa asociación la tenemos en AppServiceProvider.
+     *
+     * @param PeliculaRepositoryInterface $repository
+     */
+    public function __construct(PeliculaRepositoryInterface $repository)
     {
-        $this->repository = new PeliculaRepository();
+        $this->repository = $repository;
     }
 
     // Para poder buscar, necesitamos traer la instacia de Request que tiene acceso a los

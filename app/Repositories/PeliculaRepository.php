@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
  *
  * @package App\Repositories
  */
-class PeliculaRepository
+class PeliculaRepository implements PeliculaRepositoryInterface
 {
     /** @var Pelicula */
 //    protected $pelicula;
