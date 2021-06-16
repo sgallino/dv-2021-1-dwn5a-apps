@@ -33,66 +33,72 @@ use PHPUnit\Framework\TestCase;
  */
 class CarritoItemTest extends TestCase
 {
+    /** @var CarritoItem */
+    protected $item;
+
+    /**
+     * Al comienzo de cada test, pedimos que se instancie un objeto CarritoItem.
+     */
+    protected function setUp(): void
+    {
+        // Si bien no hace falta en este caso, es muy común que al hacer un override de un método,
+        // llamemos al método original.
+//        parent::setUp();
+        $this->item = new CarritoItem();
+    }
+
     public function test_can_create_instance_from_carritoitem()
     {
-        $ci = new CarritoItem;
-
-        $this->assertInstanceOf(CarritoItem::class, $ci);
+        $this->assertInstanceOf(CarritoItem::class, $this->item);
     }
 
     public function test_can_set_a_movie_to_a_carritoitem()
     {
-        $ci = new CarritoItem();
+        $pelicula = $this->getPelicula();
 
-        $pelicula = new Pelicula();
-        $pelicula->pelicula_id = 1;
-        $pelicula->precio = 499.99;
+        $this->item->setProducto($pelicula);
 
-        $ci->setProducto($pelicula);
-
-        $this->assertEquals($pelicula, $ci->getProducto());
+        $this->assertEquals($pelicula, $this->item->getProducto());
     }
 
     public function test_set_a_movie_to_a_carritoitem_without_quantity_defaults_quantity_to_one()
     {
-        $ci = new CarritoItem();
+        $pelicula = $this->getPelicula();
 
-        $pelicula = new Pelicula();
-        $pelicula->pelicula_id = 1;
-        $pelicula->precio = 499.99;
+        $this->item->setProducto($pelicula);
 
-        $ci->setProducto($pelicula);
-
-        $this->assertEquals(1, $ci->getCantidad());
+        $this->assertEquals(1, $this->item->getCantidad());
     }
 
     public function test_set_cantidad_of_5_sets_it_correctly()
     {
-        $ci = new CarritoItem();
-
         $expected = 5;
 
-        $ci->setCantidad($expected);
+        $this->item->setCantidad($expected);
 
-        $this->assertEquals($expected, $ci->getCantidad());
+        $this->assertEquals($expected, $this->item->getCantidad());
     }
 
     // test_get_subtotal_retorna_el_precio_por_cantidad
     public function test_get_subtotal_returns_the_price_times_quantity()
     {
-        $ci = new CarritoItem();
-
-        $pelicula = new Pelicula();
-        $pelicula->pelicula_id = 1;
-        $pelicula->precio = 499.99;
+        $pelicula = $this->getPelicula();
 
         $cantidad = 5;
 
-        $ci->setProducto($pelicula);
-        $ci->setCantidad($cantidad);
+        $this->item->setProducto($pelicula);
+        $this->item->setCantidad($cantidad);
 
-        $subtotal = $ci->getSubtotal();
+        $subtotal = $this->item->getSubtotal();
 
         $this->assertEquals(2499.95, $subtotal);
+    }
+
+    public function getPelicula()
+    {
+        $pelicula = new Pelicula();
+        $pelicula->pelicula_id = 1;
+        $pelicula->precio = 499.99;
+        return $pelicula;
     }
 }
