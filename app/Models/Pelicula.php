@@ -58,6 +58,7 @@ class Pelicula extends Model
         'duracion',
         'imagen',
         'pais_id',
+        'calificacion_id',
     ];
 
     /** @var string[] Las reglas de validación. */
@@ -65,7 +66,8 @@ class Pelicula extends Model
         'titulo' => 'required|min:2',
 //        'titulo' => ['required', 'min:2'],
         'precio' => 'required|numeric',
-        'fecha_estreno' => 'required|date'
+        'fecha_estreno' => 'required|date',
+        'pais_id' => 'required',
     ];
 
     /** @var string[] Los mensajes personalizados de error para las $rules. */
