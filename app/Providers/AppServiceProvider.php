@@ -7,6 +7,7 @@ use App\Repositories\PeliculaRepositoryHardcode;
 use App\Repositories\PeliculaRepositoryInterface;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use MercadoPago\SDK;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,5 +36,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrap();
+
+        // Leemos el token que levantamos en el [config/mercadopago.php] del [.env].
+        SDK::setAccessToken(config('mercadopago.access_token'));
     }
 }

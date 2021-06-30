@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MercadoPagoController;
 use App\Http\Controllers\PeliculasController;
 use App\Http\Controllers\VerificarEdadController;
 use Illuminate\Support\Facades\Route;
@@ -125,3 +126,14 @@ Route::prefix('/peliculas')->group(function() {
             ->name('peliculas.eliminar');
     });
 });
+
+/*
+ |--------------------------------------------------------------------------
+ | Ejemplo con MercadoPago
+ |--------------------------------------------------------------------------
+ */
+Route::get('mptest/comprar', [MercadoPagoController::class, 'comprarForm']);
+
+Route::get('mptest/pago-confirmado', [MercadoPagoController::class, 'pagoConfirmado'])->name('mp.pago.confirmado');
+Route::get('mptest/pago-pendiente', [MercadoPagoController::class, 'pagoPendiente'])->name('mp.pago.pendiente');
+Route::get('mptest/pago-fallado', [MercadoPagoController::class, 'pagoFallido'])->name('mp.pago.fallado');

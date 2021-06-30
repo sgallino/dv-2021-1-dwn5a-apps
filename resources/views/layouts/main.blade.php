@@ -51,5 +51,8 @@
     <div class="footer">
         <p>Copyright &copy; Da Vinci 2021</p>
     </div>
+
+{{--    @yield('js')--}}
+    @stack('js')
 </body>
 </html>
